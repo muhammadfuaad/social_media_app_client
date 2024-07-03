@@ -8,7 +8,6 @@ type FieldType = {
   name?: string;
   email?: string;
   password?: string;
-  remember?: boolean; // Changed to boolean
 };
 
 const Register: React.FC = () => {
@@ -76,14 +75,6 @@ const Register: React.FC = () => {
         >
           <Input.Password />
         </Form.Item>
-
-        {/* <Form.Item<FieldType>
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
