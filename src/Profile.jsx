@@ -1,8 +1,11 @@
+import { Button } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
+  const navigate = useNavigate()
   useEffect(() => {
     const token = localStorage.getItem("token");
     console.log("token:", token);
@@ -24,7 +27,6 @@ export default function Profile() {
   return (
     <>
       <p className="text-lg font-bold">Your Posts: {userPosts.length}</p>
-
       {userPosts.map((post)=>{
         return (
           <>
@@ -32,6 +34,7 @@ export default function Profile() {
           </>
         )
       })}
+      <Button type="primary" onClick={()=>{navigate("/new_post")}}>Add New</Button>
     </>
   );
 }
