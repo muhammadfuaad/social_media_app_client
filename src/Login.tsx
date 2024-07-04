@@ -16,6 +16,7 @@ const Login: React.FC = () => {
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     axios.post('http://127.0.0.1:3000/login', values)
       .then(response => {
+        console.log('response:', response);
         console.log('response.data:', response.data);
 
         notification.success({
