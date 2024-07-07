@@ -13,6 +13,8 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/new_post" element={<PostForm />} />
+        <Route path="/update_post" element={<PostForm />} />
+
       </Routes>
     </BrowserRouter>
   )
