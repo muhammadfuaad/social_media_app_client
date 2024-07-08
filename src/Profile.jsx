@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
   const [allPosts, setAllPosts] =useState([])
+  const [userId, setUserId] = useState("")
 
   const navigate = useNavigate()
   useEffect(() => {
@@ -19,7 +20,8 @@ export default function Profile() {
     })
     .then((response) => {
       console.log("response:", response);
-      setUserPosts(response.data)
+      setUserPosts(response.data.data)
+      setUserId(response.data.user_id)
     })
     .catch((error) => {
       console.log("error:", error);
@@ -37,6 +39,7 @@ export default function Profile() {
     .catch((error) => {
       console.log("error:", error);
     });
+
   }, []);
 
   useEffect(()=>{
@@ -45,11 +48,11 @@ export default function Profile() {
 
   }, [userPosts, allPosts])
 
-  const editComment = (post) => {
+  const editPost = (post) => {
     navigate("/update_post", {state: post})
   }
 
-  const deleteComment = (id) => {
+  const deletePost = (id) => {
     console.log(id);
     axios.delete(`http://127.0.0.1:3000/delete_post/${id}`).then((response)=>{
       console.log(response)
@@ -77,8 +80,8 @@ export default function Profile() {
             <div className="flex gap-12" key={index}>
               <p>
                 {post.content}<span className="text-gray-400">{post.user_name}</span>
-                <span className="text-blue-600 cursor-pointer" onClick={()=>{editComment(post)}}>Edit</span>
-                <span className="text-red-600 cursor-pointer" onClick={()=>{deleteComment(_id)}}>Delete</span>
+                <span className="text-blue-600 cursor-pointer" onClick={()=>{editPost(post)}}>Edit</span>
+                <span className="text-red-600 cursor-pointer" onClick={()=>{deletePost(_id)}}>Delete</span>
               </p>
             </div>
           )
@@ -93,7 +96,7 @@ export default function Profile() {
           const {_id} = post
           return (
 
-          <div key={index} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          <div key={index} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
             <div className="p-5">
               <div className="flex gap-4">
                 <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
@@ -108,18 +111,22 @@ export default function Profile() {
                 >
                   Comment
                 </a>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
-                  bg-blue-700 rounded-lg"
-                  onClick={()=>{editComment(post)}}
-                >
-                  Edit
-                </a>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
-                  bg-red-700 rounded-lg"
-                  onClick={()=>{deleteComment(_id)}}
-                >
-                  Delete
-                </a>
+                {userId == post.user_id && 
+                  <>
+                    <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
+                      bg-blue-700 rounded-lg"
+                      onClick={()=>{editPost(post)}}
+                    >
+                      Edit
+                    </a>
+                    <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
+                      bg-red-700 rounded-lg"
+                      onClick={()=>{deletePost(_id)}}
+                    >
+                      Delete
+                    </a>
+                  </>
+                }
               </div>
             </div>
           </div>
