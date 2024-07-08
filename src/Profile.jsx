@@ -39,6 +39,12 @@ export default function Profile() {
     });
   }, []);
 
+  useEffect(()=>{
+    console.log("userPosts:", userPosts);
+    console.log("allPosts:", allPosts);
+
+  }, [userPosts, allPosts])
+
   const editComment = (post) => {
     navigate("/update_post", {state: post})
   }
@@ -82,19 +88,51 @@ export default function Profile() {
       </div>
 
       <div>
-        <p className="text-lg font-bold">All Posts: {userPosts.length}</p>
+        <p className="text-lg font-bold">All Posts: {allPosts.length}</p>
         {allPosts.map((post, index)=>{
           const {_id} = post
           return (
-            <div className="flex gap-12" key={index}>
-              <p>
-                {post.content}<span className="text-gray-400">{post.user_name}</span>
-                <span className="text-blue-600 cursor-pointer" onClick={()=>{editComment(post)}}>Edit</span>
-                <span className="text-red-600 cursor-pointer" onClick={()=>{deleteComment(_id)}}>Delete</span>
-              </p>
+
+          <div key={index} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="p-5">
+              <div className="flex gap-4">
+                <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
+                <a href="#">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.user_name}</h5>
+                </a>
+              </div>
+              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
+              <div className="flex gap-4">
+                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
+                  bg-blue-700 rounded-lg"
+                >
+                  Comment
+                </a>
+                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
+                  bg-blue-700 rounded-lg"
+                  onClick={()=>{editComment(post)}}
+                >
+                  Edit
+                </a>
+                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
+                  bg-red-700 rounded-lg"
+                  onClick={()=>{deleteComment(_id)}}
+                >
+                  Delete
+                </a>
+              </div>
             </div>
+          </div>
+
+
+             
           )
         })}
+
+        
+
+
+
       </div>
     </>
   );
