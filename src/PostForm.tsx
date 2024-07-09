@@ -11,7 +11,14 @@ type FieldType = {
 const PostForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation()
-  // console.log(location);
+  console.log("location:", location);
+  console.log("localStorage:", localStorage);
+  console.log("localStorage.post._id:", localStorage.post._id);
+  const data = localStorage.getItem("post")
+  console.log("data:", data);
+  const post = JSON.parse(data)
+  console.log("post._id:", post._id);
+
   if (location.state !== null) {
     const content = location?.state.content
     const id = location?.state._id
@@ -45,7 +52,8 @@ const PostForm: React.FC = () => {
             });
           });
       } else {
-        axios.put(`http://127.0.0.1:3000/update_post/${location.state._id}`, values, {
+        axios.put(`http://127.0.0.1:3000/update_post/${post._id}`, values, {
+          // question: why doesnt it work with 'location.state.id'?
           headers: {
             Authorization: `Bearer ${token}`
           }})
