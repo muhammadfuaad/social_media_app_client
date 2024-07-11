@@ -11,13 +11,15 @@ type FieldType = {
 const PostForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation()
-  console.log("location:", location);
-  console.log("localStorage:", localStorage);
-  console.log("localStorage.post._id:", localStorage.post._id);
-  const data = localStorage.getItem("post")
-  console.log("data:", data);
-  const post = JSON.parse(data)
-  console.log("post._id:", post._id);
+  if (location?.pathname !== "/new_post") {
+    console.log("location:", location);
+    console.log("localStorage:", localStorage);
+    console.log("localStorage.post._id:", localStorage.post._id);
+    const data = localStorage.getItem("post")
+    console.log("data:", data);
+    const post = JSON.parse(data)
+    console.log("post._id:", post._id);
+  }
 
   if (location.state !== null) {
     const content = location?.state.content

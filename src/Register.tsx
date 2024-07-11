@@ -26,13 +26,17 @@ const Register: React.FC = () => {
         });
       })
       .catch(error => {
-        console.error('There was an error!', error);
+        console.error('error', error);
+        const response = error.response
+        console.error('error.response', error.response);
+        console.error('error.response.data.message:', error.response.data.message);
+        console.error('error.request', error.request);
+        console.error('response', response);
         notification.error({
           message: 'Registration Failed',
-          description: 'Please try again.',
+          description: error.response.data.message,
         });
       }) 
-      
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {

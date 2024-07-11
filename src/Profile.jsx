@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Post from "./Post";
+import socket from "./socket";
 
 export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
@@ -10,6 +11,22 @@ export default function Profile() {
   const [userId, setUserId] = useState("")
 
   const navigate = useNavigate()
+  
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('new_comment', (comment) => {
+      console.log("comment:", comment);
+      console.log("coment added");
+    });
+
+    return () => {
+      socket.off('new_comment');
+    };
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     console.log("token:", token);
@@ -49,6 +66,10 @@ export default function Profile() {
 
   }, [userPosts, allPosts])
 
+  const addPost = () => {
+    navigate("/new_post")
+  }
+
   const editPost = (post) => {
     navigate("/update_post", {state: post})
   }
@@ -80,7 +101,7 @@ export default function Profile() {
             <Post post = {post} key={index} userId = {userId} />
           )
         })}
-        <Button type="primary" onClick={()=>{navigate("/new_post")}}>Add New</Button>
+        <Button type="primary" onClick={addPost}>Add New</Button>
       </div>
 
       <div>
