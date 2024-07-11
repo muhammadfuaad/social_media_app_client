@@ -6,6 +6,8 @@ import { useState } from "react";
 export default function Post({post, userId, index}) {
   const navigate = useNavigate()
   const [showInput, setShowInput] = useState(false)
+  const [comment, setComment] =useState("")
+  const token = localStorage.getItem("token")
   const editPost = async(post) => {
     console.log("post:", post);
     localStorage.setItem("post", JSON.stringify(post))
@@ -22,6 +24,16 @@ export default function Post({post, userId, index}) {
       console.log(error);
       notification.error({message: ""})
     })
+  }
+
+  const addComment =(postId) => {
+    console.log(postId);
+    axios.post(`http://127.0.0.1:3000/add_comment/${postId}`, {content: comment}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then((response)=>{console.log(response);})
+    .catch((error)=>{console.log(error);})
   }
 
   return (
@@ -60,8 +72,8 @@ export default function Post({post, userId, index}) {
         </div>
         {showInput && 
           (<div className="flex">
-            <input className="rounded border-black border block w-full"></input>
-            <button className="bg-blue-600 text-white">Submit</button>
+            <input className="rounded border-black border block w-full" onChange={(e)=>{setComment(e.target.value)}}></input>
+            <button className="bg-blue-600 text-white" onClick={()=>{addComment(post._id)}}>Submit</button>
           </div>)
         }
       </div>
