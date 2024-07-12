@@ -1,4 +1,4 @@
-import { Button, notification } from "antd";
+import { Button, notification, Spin } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -9,6 +9,7 @@ export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
   const [allPosts, setAllPosts] =useState([])
   const [userId, setUserId] = useState("")
+  const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
   
@@ -40,6 +41,7 @@ export default function Profile() {
       console.log("response:", response);
       setUserPosts(response.data.data)
       setUserId(response.data.user_id)
+      setLoading(false)
     })
     .catch((error) => {
       console.log("error:", error);
@@ -53,17 +55,16 @@ export default function Profile() {
     .then((response) => {
       console.log("response:", response);
       setAllPosts(response.data)
+      setLoading(false)
     })
     .catch((error) => {
       console.log("error:", error);
     });
-
   }, []);
 
   useEffect(()=>{
     console.log("userPosts:", userPosts);
     console.log("allPosts:", allPosts);
-
   }, [userPosts, allPosts])
 
   const addPost = () => {
@@ -91,27 +92,32 @@ export default function Profile() {
     notification.success({message: "Logged Out Successfully"})
     navigate("/login")
   }
-  return (
-    <>
-      <button onClick={logOut}>Log Out</button>
-      <div>
-        <p className="text-lg font-bold">Your Posts: {userPosts.length}</p>
-        {userPosts.map((post, index)=>{
-          return (
-            <Post post = {post} key={index} userId = {userId} />
-          )
-        })}
-        <Button type="primary" onClick={addPost}>Add New</Button>
-      </div>
 
-      <div>
-        <p className="text-lg font-bold">All Posts: {allPosts.length}</p>
-        {allPosts.map((post, index)=>{
-          return (
-            <Post post = {post} key={index} userId = {userId} />
-          )
-        })}
-      </div>
-    </>
-  );
+  if (loading) {
+    return <Spin size="large" gap="middle" />
+  } else {
+    return (
+      <>
+        <button onClick={logOut}>Log Out</button>
+        <div>
+          <p className="text-lg font-bold">Your Posts: {userPosts.length}</p>
+          {userPosts.map((post, index)=>{
+            return (
+              <Post post = {post} key={index} userId = {userId} />
+            )
+          })}
+          <Button type="primary" onClick={addPost}>Add New</Button>
+        </div>
+
+        <div>
+          <p className="text-lg font-bold">All Posts: {allPosts.length}</p>
+          {allPosts.map((post, index)=>{
+            return (
+              <Post post = {post} key={index} userId = {userId} />
+            )
+          })}
+        </div>
+      </>
+    );
+  }
 }

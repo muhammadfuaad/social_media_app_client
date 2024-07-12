@@ -8,6 +8,12 @@ export default function Post({post, userId, index}) {
   const [showInput, setShowInput] = useState(false)
   const [comment, setComment] =useState("")
   const token = localStorage.getItem("token")
+
+  // exctracting post data
+  const postId = post._id
+  console.log(postId);
+
+  // post actions
   const editPost = async(post) => {
     console.log("post:", post);
     localStorage.setItem("post", JSON.stringify(post))
@@ -26,6 +32,7 @@ export default function Post({post, userId, index}) {
     })
   }
 
+  // comment actions 
   const addComment =(postId) => {
     console.log(postId);
     axios.post(`http://127.0.0.1:3000/add_comment/${postId}`, {content: comment}, {
@@ -42,7 +49,7 @@ export default function Post({post, userId, index}) {
         <div className="flex gap-4">
           <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
           <a href="#">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.user_id.name}</h5>
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.userId.name}</h5>
           </a>
         </div>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
