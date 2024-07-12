@@ -42,7 +42,7 @@ export default function Post({post, userId, index}) {
         <div className="flex gap-4">
           <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
           <a href="#">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.user_name}</h5>
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.user_id.name}</h5>
           </a>
         </div>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
