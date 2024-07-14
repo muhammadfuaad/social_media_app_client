@@ -3,7 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Post from "./Post";
-import socket from "./socket";
 
 export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
@@ -12,21 +11,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
-  
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-
-    socket.on('new_comment', (comment) => {
-      console.log("comment:", comment);
-      console.log("coment added");
-    });
-
-    return () => {
-      socket.off('new_comment');
-    };
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
