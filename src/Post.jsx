@@ -4,7 +4,7 @@ import { Dropdown, notification } from "antd";
 import { useEffect, useState } from "react";
 import socket from "./socket";
 
-export default function Post({post, userId, index}) {
+export default function Post({post, loggedUserId, index}) {
   const navigate = useNavigate()
   const [showInput, setShowInput] = useState(false)
   const [comment, setComment] =useState("")
@@ -15,7 +15,7 @@ export default function Post({post, userId, index}) {
 
   // exctracting post data
   const postId = post._id
-  // console.log(userId);
+  // console.log(loggedUserId);
   // console.log(post);
   console.log(postId);
 
@@ -115,19 +115,20 @@ export default function Post({post, userId, index}) {
               </a>
             
             </div>
-            {userId == post.userId._id && 
+            {loggedUserId == post.userId._id && 
             <Dropdown menu = {{items}} placement="bottomLeft"><span className="cursor-pointer">...</span></Dropdown>}
             
           </div>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
           <span className="text-blue-500 text-sm cursor-pointer" onClick={()=>{setShowComments(!showComments)}}>{comments.length} comments</span>
           
-          <div className="flex gap-4">
+          <div className="flex gap-12">
             <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
               bg-blue-700 rounded-lg" onClick={()=>{setShowInput(!showInput)}}
             >
               Comment
             </a>
+            <span onClick={()=>{}}>Like</span>
           </div>
           {showInput &&
             (<div className="flex">
@@ -144,7 +145,7 @@ export default function Post({post, userId, index}) {
               <div className="flex gap-2">
                 <img className="w-6 h-6 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
                 <a href="#">
-                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{comment.userId.name}</h5>
+                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{comment.loggedUserId.name}</h5>
                 </a>
               </div>
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>

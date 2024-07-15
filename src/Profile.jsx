@@ -7,7 +7,7 @@ import Post from "./Post";
 export default function Profile() {
   const [userPosts, setUserPosts] =useState([])
   const [allPosts, setAllPosts] =useState([])
-  const [userId, setUserId] = useState("")
+  const [loggedUserId, setLoggedUserId] = useState("")
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
@@ -29,7 +29,7 @@ export default function Profile() {
       // setUserId(response.data.userId)
       // question: why isn;t this working?
       const id = response.data.userId
-      setUserId(id)
+      setLoggedUserId(id)
       setLoading(false)
     })
     .catch((error) => {
@@ -52,8 +52,8 @@ export default function Profile() {
   }, []);
 
   useEffect(()=>{
-    console.log("userId:", userId);
-  }, [userPosts, allPosts, userId])
+    console.log("userId:", loggedUserId);
+  }, [userPosts, allPosts, loggedUserId])
 
   const addPost = () => {
     navigate("/new_post")
@@ -75,7 +75,7 @@ export default function Profile() {
           <p className="text-lg font-bold">Your Posts: {userPosts.length}</p>
           {userPosts.map((post, index)=>{
             return (
-              <Post post = {post} key={index} userId = {userId} />
+              <Post post = {post} key={index} loggedUserId = {loggedUserId} />
             )
           })}
           <Button type="primary" onClick={addPost}>Add New</Button>
@@ -85,7 +85,7 @@ export default function Profile() {
           <p className="text-lg font-bold">All Posts: {allPosts.length}</p>
           {allPosts.map((post, index)=>{
             return (
-              <Post post = {post} key={index} userId = {userId} />
+              <Post post = {post} key={index} loggedUserId = {loggedUserId} />
             )
           })}
         </div>
