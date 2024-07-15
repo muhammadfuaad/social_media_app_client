@@ -93,7 +93,7 @@ export default function Post({post, userId, index}) {
             </a>
           </div>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
-          <span className="text-blue-500 text-sm" onClick={()=>{setShowComments(!showComments)}}>{comments.length} comments</span>
+          <span className="text-blue-500 text-sm cursor-pointer" onClick={()=>{setShowComments(!showComments)}}>{comments.length} comments</span>
           
           <div className="flex gap-4">
             <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
