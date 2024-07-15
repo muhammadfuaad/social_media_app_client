@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { notification } from "antd";
+import { Dropdown, notification } from "antd";
 import { useEffect, useState } from "react";
 import socket from "./socket";
 
@@ -84,15 +84,40 @@ export default function Post({post, userId, index}) {
     console.log(comments);
   }, [comments])
 
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a onClick={()=>{editPost(post)}}>
+          Edit
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a onClick={()=>{deletePost(post._id)}}>
+          Delete
+        </a>
+      ),
+    },
+  ]
+
   return (
     <div key={index}>
       <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
         <div className="p-5">
-          <div className="flex gap-4">
-            <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
-            <a href="#">
-              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.userId.name}</h5>
-            </a>
+          <div className="flex justify-between">
+            <div className="flex gap-4">
+              <img className="w-12 h-12 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
+              <a href="#">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.userId.name}</h5>
+              </a>
+            
+            </div>
+            {userId == post.userId._id && 
+            <Dropdown menu = {{items}} placement="bottomLeft"><span className="cursor-pointer">...</span></Dropdown>}
+            
           </div>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
           <span className="text-blue-500 text-sm cursor-pointer" onClick={()=>{setShowComments(!showComments)}}>{comments.length} comments</span>
@@ -103,23 +128,6 @@ export default function Post({post, userId, index}) {
             >
               Comment
             </a>
-      
-            {userId == post.userId._id &&
-              <>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
-                  bg-blue-700 rounded-lg"
-                  onClick={()=>{editPost(post)}}
-                >
-                  Edit
-                </a>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
-                  bg-red-700 rounded-lg"
-                  onClick={()=>{deletePost(post._id)}}
-                >
-                  Delete
-                </a>
-              </>
-            }
           </div>
           {showInput &&
             (<div className="flex">
@@ -131,8 +139,8 @@ export default function Post({post, userId, index}) {
       </div>
       {showComments && comments.map((comment) => {
         return (
-          <div key={comment._id} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-            <div className="p-1">
+          <div key={comment._id} className="flex flex-col gap-2">
+            <div className="p-1 max-w-sm bg-white border border-gray-200 rounded-lg shadow">
               <div className="flex gap-2">
                 <img className="w-6 h-6 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
                 <a href="#">
@@ -141,6 +149,7 @@ export default function Post({post, userId, index}) {
               </div>
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
             </div>
+            <div className="flex gap-4 text-sm"><span>Like</span>|<span>Reply</span></div>
           </div>
         );
       })}
