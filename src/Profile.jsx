@@ -14,7 +14,7 @@ export default function Profile() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("token:", token);
+    // console.log("token:", token);
     
     axios.get("http://127.0.0.1:3000/user_posts", {
       headers: {
@@ -24,7 +24,12 @@ export default function Profile() {
     .then((response) => {
       console.log("response:", response);
       setUserPosts(response.data.data)
-      setUserId(response.data.user_id)
+      console.log("response.data.userId:", response.data.userId);
+      console.log("typeof response.data.userId:", typeof response.data.userId);
+      // setUserId(response.data.userId)
+      // question: why isn;t this working?
+      const id = response.data.userId
+      setUserId(id)
       setLoading(false)
     })
     .catch((error) => {
@@ -47,28 +52,11 @@ export default function Profile() {
   }, []);
 
   useEffect(()=>{
-    console.log("userPosts:", userPosts);
-    console.log("allPosts:", allPosts);
-  }, [userPosts, allPosts])
+    console.log("userId:", userId);
+  }, [userPosts, allPosts, userId])
 
   const addPost = () => {
     navigate("/new_post")
-  }
-
-  const editPost = (post) => {
-    navigate("/update_post", {state: post})
-  }
-
-  const deletePost = (id) => {
-    console.log(id);
-    axios.delete(`http://127.0.0.1:3000/delete_post/${id}`).then((response)=>{
-      console.log(response)
-      notification.success({message: response.data.message})
-    })
-    .catch((error)=>{
-      console.log(error);
-      notification.error({message: ""})
-    })
   }
 
   const logOut = () => {

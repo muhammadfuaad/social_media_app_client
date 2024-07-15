@@ -15,6 +15,8 @@ export default function Post({post, userId, index}) {
 
   // exctracting post data
   const postId = post._id
+  // console.log(userId);
+  // console.log(post);
   console.log(postId);
 
   // post actions
@@ -102,7 +104,7 @@ export default function Post({post, userId, index}) {
               Comment
             </a>
       
-            {userId == post.user_id &&
+            {userId == post.userId._id &&
               <>
                 <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white
                   bg-blue-700 rounded-lg"
