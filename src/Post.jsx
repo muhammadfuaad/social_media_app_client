@@ -93,7 +93,7 @@ export default function Post({post, loggedUserId, index}) {
     setComment(e.target.value)
   }
 
-  const items = [
+  const postOptions = [
     {
       key: '1',
       label: (
@@ -106,6 +106,34 @@ export default function Post({post, loggedUserId, index}) {
       key: '2',
       label: (
         <a onClick={()=>{deletePost(post._id)}}>
+          Delete
+        </a>
+      ),
+    },
+  ]
+
+  const commentOptions = [
+    {
+      key: '1',
+      label: (
+        <a onClick={()=>{
+          // setIsEditComment(true);
+          axios.put(`http://127.0.0.1:3000/update_comment/${commentId}`, {content: comment}, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).then((response)=>{console.log(response);})
+          .catch((error)=>{console.log(error);})
+        }
+          }>
+          Edit
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a onClick={()=>{deleteComment(comment)}}>
           Delete
         </a>
       ),
@@ -125,7 +153,7 @@ export default function Post({post, loggedUserId, index}) {
             
             </div>
             {loggedUserId == post.userId._id && 
-            <Dropdown menu = {{items}} placement="bottomLeft"><span className="cursor-pointer">...</span></Dropdown>}
+            <Dropdown menu = {{items: postOptions}} placement="bottomLeft"><span className="cursor-pointer">...</span></Dropdown>}
             
           </div>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
@@ -152,13 +180,16 @@ export default function Post({post, loggedUserId, index}) {
         return (
           <div key={comment._id} className="flex flex-col gap-2">
             <div className="p-1 max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-              <div className="flex gap-2">
-                <img className="w-6 h-6 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
-                <a href="#">
-                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{comment.userId.name}</h5>
-                </a>
+              <div className="flex justify-between">
+                <div className="flex gap-2">
+                  <img className="w-6 h-6 mb-3 rounded-full shadow-lg" src="./avatar.svg" alt="Bonnie image"/>
+                  <a href="#">
+                    <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{comment.userId.name}</h5>
+                  </a>
+                </div>
+                {loggedUserId == comment.userId._id && 
+                <Dropdown menu = {{items: commentOptions}}><span className="cursor-pointer">...</span></Dropdown>}
               </div>
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
             </div>
             <div className="flex gap-4 text-sm"><span>Like</span>|<span>Reply</span></div>
           </div>
