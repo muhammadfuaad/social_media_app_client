@@ -16,34 +16,44 @@ export default function Post({post, loggedUserId, index}) {
 
   // exctracting post data
   const postId = post._id
-  // console.log(loggedUserId);
-  // console.log(post);
-  console.log(postId);
+  // // console.log(loggedUserId);
+  // // console.log(post);
+  // console.log(postId);
 
   // post actions
   const editPost = async(post) => {
-    console.log("post:", post);
+    // console.log("post:", post);
     localStorage.setItem("post", JSON.stringify(post))
     navigate("/update_post", {state: post})
   }
 
   const deletePost = (id) => {
-    console.log(id);
+    // console.log(id);
     axios.delete(`http://127.0.0.1:3000/delete_post/${id}`).then((response)=>{
-      console.log(response)
+      // console.log(response)
       notification.success({message: response.data.message})
     })
     .catch((error)=>{
-      console.log(error);
+      // console.log(error);
       notification.error({message: ""})
     })
   }
 
   // comment actions 
   const addComment =(postId) => {
-    console.log(postId);
-    console.log(comment);
+    // console.log(postId);
+    // console.log(comment);
     axios.post(`http://127.0.0.1:3000/add_comment/${postId}`, {content: comment}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then((response)=>{console.log(response);})
+    .catch((error)=>{console.log(error);})
+  }
+
+  const deleteComment =(commentId) => {
+    console.log(commentId);
+    axios.delete(`http://127.0.0.1:3000/delete_comment/${commentId}`,{
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -53,12 +63,12 @@ export default function Post({post, loggedUserId, index}) {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Connected to server');
+      // console.log('Connected to server');
     });
 
     socket.on('new_comment', (comment) => {
-      console.log("comment:", comment);
-      console.log("coment added");
+      // console.log("comment:", comment);
+      // console.log("coment added");
       // const newComments = comments.push(comment)
       // setComments(newComments)
       setComments((prevComments) => [...prevComments, comment]);
@@ -75,16 +85,16 @@ export default function Post({post, loggedUserId, index}) {
         Authorization: `Bearer ${token}`
       }
     }).then((response)=>{
-      console.log(response);
+      // console.log(response);
       setComments(response.data.data)
       
     })
     .catch((error)=>{console.log(error);})
   }, [])
 
-  useEffect(()=>{
-    console.log(comments);
-  }, [comments])
+  // useEffect(()=>{
+  //   console.log(comments);
+  // }, [comments])
 
   const handleInput = (e) => {
     if (e.target.value !== 0) {
@@ -106,34 +116,6 @@ export default function Post({post, loggedUserId, index}) {
       key: '2',
       label: (
         <a onClick={()=>{deletePost(post._id)}}>
-          Delete
-        </a>
-      ),
-    },
-  ]
-
-  const commentOptions = [
-    {
-      key: '1',
-      label: (
-        <a onClick={()=>{
-          // setIsEditComment(true);
-          axios.put(`http://127.0.0.1:3000/update_comment/${commentId}`, {content: comment}, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }).then((response)=>{console.log(response);})
-          .catch((error)=>{console.log(error);})
-        }
-          }>
-          Edit
-        </a>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <a onClick={()=>{deleteComment(comment)}}>
           Delete
         </a>
       ),
@@ -177,6 +159,34 @@ export default function Post({post, loggedUserId, index}) {
         </div>
       </div>
       {showComments && comments.map((comment) => {
+        console.log(comment);
+        const commentOptions = [
+          {
+            key: '1',
+            label: (
+              <a onClick={()=>{
+                // setIsEditComment(true);
+                axios.put(`http://127.0.0.1:3000/update_comment/${commentId}`, {content: comment}, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }).then((response)=>{console.log(response);})
+                .catch((error)=>{console.log(error);})
+              }
+                }>
+                Edit
+              </a>
+            ),
+          },
+          {
+            key: '2',
+            label: (
+              <a onClick={()=>{deleteComment(comment._id)}}>
+                Delete
+              </a>
+            ),
+          },
+        ]
         return (
           <div key={comment._id} className="flex flex-col gap-2">
             <div className="p-1 max-w-sm bg-white border border-gray-200 rounded-lg shadow">
@@ -190,6 +200,8 @@ export default function Post({post, loggedUserId, index}) {
                 {loggedUserId == comment.userId._id && 
                 <Dropdown menu = {{items: commentOptions}}><span className="cursor-pointer">...</span></Dropdown>}
               </div>
+              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
+
             </div>
             <div className="flex gap-4 text-sm"><span>Like</span>|<span>Reply</span></div>
           </div>
