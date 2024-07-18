@@ -135,7 +135,7 @@ export default function Post({post, loggedUserId, index}) {
             
             </div>
             {loggedUserId == post.userId._id && 
-            <Dropdown menu = {{items: postOptions}} placement="bottomLeft"><span className="cursor-pointer">...</span></Dropdown>}
+            <Dropdown menu = {{items: postOptions}} placement="bottomLeft"><span className="cursor-pointer h-fit">...</span></Dropdown>}
             
           </div>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.content}</p>
@@ -198,7 +198,7 @@ export default function Post({post, loggedUserId, index}) {
                   </a>
                 </div>
                 {loggedUserId == comment.userId._id && 
-                <Dropdown menu = {{items: commentOptions}}><span className="cursor-pointer">...</span></Dropdown>}
+                <Dropdown menu = {{items: commentOptions}} placement="bottomLeft"><span className="cursor-pointer h-fit">...</span></Dropdown>}
               </div>
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
 
