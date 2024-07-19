@@ -9,18 +9,34 @@ export default function Post({post, loggedUserId, index}) {
   const [showInput, setShowInput] = useState(false)
   const [comment, setComment] =useState("")
   const [comments, setComments] =useState([])
-  const [showComments, setShowComments] =useState(false)
+  const [showComments, setShowComments] =useState(true)
   const [showSubmit, setShowSubmit] = useState(false)
 
   const token = localStorage.getItem("token")
 
   // exctracting post data
-  const postId = post._id
+  const postId = post._id;
   // // console.log(loggedUserId);
   // // console.log(post);
   // console.log(postId);
 
   // post actions
+    
+  const likePost = () => {
+    axios.post(`http://127.0.0.1:3000/like_post/${postId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response)=>{
+      console.log(response)
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
+
   const editPost = async(post) => {
     // console.log("post:", post);
     localStorage.setItem("post", JSON.stringify(post))
@@ -67,12 +83,21 @@ export default function Post({post, loggedUserId, index}) {
     });
 
     socket.on('new_comment', (comment) => {
-      // console.log("comment:", comment);
-      // console.log("coment added");
       // const newComments = comments.push(comment)
       // setComments(newComments)
       setComments((prevComments) => [...prevComments, comment]);
     });
+
+    socket.on('delete_comment', (data) => {
+      // const deletedCommentId = data._id
+      // console.log(deletedCommentId);
+      console.log(data);
+      console.log(comments);
+      const newComments = comments.filter((comment)=>comment._id != data)
+      console.log("newComments:", newComments);
+      // setComments(newComments)
+      setComments((prevComments) => [...prevComments.filter((comment)=>comment._id != data)]);
+    })
 
     return () => {
       socket.off('new_comment');
@@ -144,7 +169,7 @@ export default function Post({post, loggedUserId, index}) {
           <div className="flex gap-12 text-gray-600 cursor-pointer">
             <span onClick={()=>{setShowInput(!showInput)}}>Comment</span>
             
-            <span onClick={()=>{}}>Like</span>
+            <span onClick={likePost}>Like</span>
           </div>
           {showInput &&
             (<div className="flex gap-4 justify-center items-center">
