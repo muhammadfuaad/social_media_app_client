@@ -11,6 +11,7 @@ export default function Post({post, loggedUserId, index}) {
   const [comments, setComments] =useState([])
   const [showComments, setShowComments] =useState(true)
   const [showSubmit, setShowSubmit] = useState(false)
+  const [postLikes, setPostLikes] = useState([])
 
   const token = localStorage.getItem("token")
 
@@ -19,6 +20,10 @@ export default function Post({post, loggedUserId, index}) {
   // // console.log(loggedUserId);
   // // console.log(post);
   // console.log(postId);
+
+  useEffect(()=>{
+    setPostLikes(post.likes)
+  }, [post.likes])
 
   // post actions
     
@@ -82,6 +87,24 @@ export default function Post({post, loggedUserId, index}) {
       // console.log('Connected to server');
     });
 
+    socket.on('post_liked', (data) => {
+      console.log('post like data:', data);
+      
+      console.log('post liked');
+      setPostLikes((prevPostLikes) => [...prevPostLikes, data]);
+    });
+
+    socket.on('post_unliked', (data) => {
+      console.log('post unlike data:', data);
+      console.log('post unliked');
+      setPostLikes((prevPostLikes) =>
+        prevPostLikes.filter(
+          (like) => like.postId !== data.postId || like.userId !== data.userId
+        )
+      );
+
+    });
+
     socket.on('new_comment', (comment) => {
       // const newComments = comments.push(comment)
       // setComments(newComments)
@@ -91,10 +114,10 @@ export default function Post({post, loggedUserId, index}) {
     socket.on('delete_comment', (data) => {
       // const deletedCommentId = data._id
       // console.log(deletedCommentId);
-      console.log(data);
-      console.log(comments);
+      // console.log(data);
+      // console.log(comments);
       const newComments = comments.filter((comment)=>comment._id != data)
-      console.log("newComments:", newComments);
+      // console.log("newComments:", newComments);
       // setComments(newComments)
       setComments((prevComments) => [...prevComments.filter((comment)=>comment._id != data)]);
     })
@@ -117,9 +140,9 @@ export default function Post({post, loggedUserId, index}) {
     .catch((error)=>{console.log(error);})
   }, [])
 
-  // useEffect(()=>{
-  //   console.log(comments);
-  // }, [comments])
+  useEffect(()=>{
+    console.log('postLikes:', postLikes);
+  }, [postLikes])
 
   const handleInput = (e) => {
     if (e.target.value !== 0) {
@@ -169,7 +192,7 @@ export default function Post({post, loggedUserId, index}) {
           <div className="flex gap-12 text-gray-600 cursor-pointer">
             <span onClick={()=>{setShowInput(!showInput)}}>Comment</span>
             
-            <span onClick={likePost}>Like</span>
+            <span onClick={likePost}>Like <span className="text-blue-500">({postLikes.length})</span></span>
           </div>
           {showInput &&
             (<div className="flex gap-4 justify-center items-center">
@@ -184,7 +207,7 @@ export default function Post({post, loggedUserId, index}) {
         </div>
       </div>
       {showComments && comments.map((comment) => {
-        console.log(comment);
+        // console.log(comment);
         const commentOptions = [
           {
             key: '1',
