@@ -21,7 +21,7 @@ const Register: React.FC = () => {
         console.log('response.data:', response.data);
         navigate("/login")
         notification.success({
-          message: 'Registration Successful',
+          message: response.data.message,
           description: `Welcome, ${values.name}!`,
         });
       })
