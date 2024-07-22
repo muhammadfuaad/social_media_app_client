@@ -9,7 +9,7 @@ export default function Post({post, loggedUserId, index}) {
   const [showInput, setShowInput] = useState(false)
   const [comment, setComment] =useState("")
   const [comments, setComments] =useState([])
-  const [showComments, setShowComments] =useState(true)
+  const [showComments, setShowComments] =useState(false)
   const [showSubmit, setShowSubmit] = useState(false)
   const [postLikes, setPostLikes] = useState([])
 
@@ -91,18 +91,22 @@ export default function Post({post, loggedUserId, index}) {
       console.log('post like data:', data);
       
       console.log('post liked');
-      setPostLikes((prevPostLikes) => [...prevPostLikes, data]);
+      if (postId == data.postId) {
+        setPostLikes((prevPostLikes) => [...prevPostLikes, {userId: data.userId}]);
+
+      }
     });
 
     socket.on('post_unliked', (data) => {
       console.log('post unlike data:', data);
       console.log('post unliked');
-      setPostLikes((prevPostLikes) =>
-        prevPostLikes.filter(
-          (like) => like.postId !== data.postId || like.userId !== data.userId
-        )
-      );
-
+      if (postId == data.postId) {
+        setPostLikes((prevPostLikes) =>
+          prevPostLikes.filter(
+            (like) => like.userId !== data.userId
+          )
+        );
+      }
     });
 
     socket.on('new_comment', (comment) => {
