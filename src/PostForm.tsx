@@ -11,7 +11,7 @@ type FieldType = {
 const PostForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation()
-  // console.log(location);
+
   if (location.state !== null) {
     const content = location?.state.content
     const id = location?.state._id
@@ -44,29 +44,36 @@ const PostForm: React.FC = () => {
               description: 'Please check your credentials and try again.',
             });
           });
-      } else {
-        axios.put(`http://127.0.0.1:3000/update_post/${location.state._id}`, values, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }})
-          .then(response => {
-            console.log('response:', response);
-            console.log('response.data:', response.data);
+    } else if (location?.pathname == "/update_post") {
+      const data = localStorage.getItem("post")
+      console.log("data:", data);
+      const post = JSON.parse(data)
+      console.log("post._id:", post._id);
+      
+      axios.put(`http://127.0.0.1:3000/update_post/${post._id}`, values, {
+      // question: why doesnt it work with 'location.state.id'?
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        console.log('response:', response);
+        console.log('response.data:', response.data);
 
-            notification.success({
-              message: response.data.message,
-            });
-            navigate("/profile");
-          })
-          .catch(error => {
-            console.error('error', error);
+        notification.success({
+          message: response.data.message,
+        });
+        navigate("/profile");
+      })
+      .catch(error => {
+        console.error('error', error);
 
-            notification.error({
-              message: 'Login Failed',
-              description: 'Please check your credentials and try again.',
-            });
-          });
-      };
+        notification.error({
+          message: 'Login Failed',
+          description: 'Please check your credentials and try again.',
+        });
+      });
+    };
   }
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -74,7 +81,7 @@ const PostForm: React.FC = () => {
 
   return (
     <div className='bg-gray-100 p-12 rounded-xl'>
-      <h2 className='font-bold text-2xl mb-16'>Add New Post</h2>
+      <h2 className='font-bold text-2xl mb-16'>{(location?.pathname == "/new_post") ? "Add New Post" : "Update Post"}</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}

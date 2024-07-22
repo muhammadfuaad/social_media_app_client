@@ -21,18 +21,22 @@ const Register: React.FC = () => {
         console.log('response.data:', response.data);
         navigate("/login")
         notification.success({
-          message: 'Registration Successful',
+          message: response.data.message,
           description: `Welcome, ${values.name}!`,
         });
       })
       .catch(error => {
-        console.error('There was an error!', error);
+        console.error('error', error);
+        const response = error.response
+        console.error('error.response', error.response);
+        console.error('error.response.data.message:', error.response.data.message);
+        console.error('error.request', error.request);
+        console.error('response', response);
         notification.error({
           message: 'Registration Failed',
-          description: 'Please try again.',
+          description: error.response.data.message,
         });
       }) 
-      
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
