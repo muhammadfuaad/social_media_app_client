@@ -61,6 +61,22 @@ export default function Post({post, loggedUserId, index}) {
   }
 
   // comment actions 
+  const likeComment = (commentId) => {
+    console.log(commentId);
+    axios.post(`http://127.0.0.1:3000/like_comment/${commentId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response)=>{
+      console.log(response)
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
+
   const addComment =(postId) => {
     // console.log(postId);
     // console.log(comment);
@@ -83,9 +99,9 @@ export default function Post({post, loggedUserId, index}) {
   }
 
   useEffect(() => {
-    socket.on('connect', () => {
-      // console.log('Connected to server');
-    });
+    // socket.on('connect', () => {
+    //  console.log('Connected to server');
+    // });
 
     socket.on('post_liked', (data) => {
       console.log('post like data:', data);
@@ -93,7 +109,8 @@ export default function Post({post, loggedUserId, index}) {
       console.log('post liked');
       if (postId == data.postId) {
         setPostLikes((prevPostLikes) => [...prevPostLikes, {userId: data.userId}]);
-
+        // const newPostLikes = postLikes.push({userId: data.userId})
+        // setPostLikes(newPostLikes)
       }
     });
 
@@ -106,6 +123,8 @@ export default function Post({post, loggedUserId, index}) {
             (like) => like.userId !== data.userId
           )
         );
+        // const newPostLikes = postLikes.filter((like)=>like.userId !== data.userId)
+        // setPostLikes(newPostLikes)
       }
     });
 
@@ -113,6 +132,32 @@ export default function Post({post, loggedUserId, index}) {
       // const newComments = comments.push(comment)
       // setComments(newComments)
       setComments((prevComments) => [...prevComments, comment]);
+    });
+
+    socket.on('comment_liked', (data) => {
+      console.log('comment like data:', data);
+      if (postId === data.postId) {
+        setComments((prevComments) => 
+          prevComments.map((comment) =>
+            comment._id === data.commentId
+              ? { ...comment, likes: [...comment.likes, { userId: data.userId }] }
+              : comment
+          )
+        );
+      }
+    });
+
+    socket.on('comment_unliked', (data) => {
+      console.log('comment unlike data:', data);
+      if (postId === data.postId) {
+        setComments((prevComments) => 
+          prevComments.map((comment) =>
+            comment._id === data.commentId
+              ? { ...comment, likes: comment.likes.filter(like => like.userId !== data.userId) }
+              : comment
+          )
+        );
+      }
     });
 
     socket.on('delete_comment', (data) => {
@@ -211,7 +256,7 @@ export default function Post({post, loggedUserId, index}) {
         </div>
       </div>
       {showComments && comments.map((comment) => {
-        // console.log(comment);
+        console.log(comment);
         const commentOptions = [
           {
             key: '1',
@@ -255,7 +300,7 @@ export default function Post({post, loggedUserId, index}) {
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
 
             </div>
-            <div className="flex gap-4 text-sm"><span>Like</span>|<span>Reply</span></div>
+            <div className="flex gap-4 text-sm"><span className="cursor-pointer" onClick={()=>{likeComment(comment._id)}}>Like</span>|<span className="cursor-pointer">Reply</span></div>
           </div>
         );
       })}
