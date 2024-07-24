@@ -12,7 +12,22 @@ export default function Post({post, loggedUserId, index}) {
   const [showComments, setShowComments] =useState(false)
   const [showSubmit, setShowSubmit] = useState(false)
   const [postLikes, setPostLikes] = useState([])
-
+  const [commentLikes, setCommentLikes] = useState([])
+  
+  useEffect(()=>{
+    const data = comments.map((comment)=>{
+      console.log('comment:', comment);
+      return {commentId: comment._id, likes: comment.likes}
+    })
+    setCommentLikes(data)
+    // console.log('data:', data);
+    console.log('comments changed');
+  }, [comments])
+  
+  useEffect(()=>{
+    console.log('commentLikes:', commentLikes);
+  }, [commentLikes])
+  
   const token = localStorage.getItem("token")
 
   // exctracting post data
@@ -136,7 +151,6 @@ export default function Post({post, loggedUserId, index}) {
 
     socket.on('comment_liked', (data) => {
       console.log('comment like data:', data);
-      if (postId === data.postId) {
         setComments((prevComments) => 
           prevComments.map((comment) =>
             comment._id === data.commentId
@@ -144,12 +158,10 @@ export default function Post({post, loggedUserId, index}) {
               : comment
           )
         );
-      }
     });
 
     socket.on('comment_unliked', (data) => {
       console.log('comment unlike data:', data);
-      if (postId === data.postId) {
         setComments((prevComments) => 
           prevComments.map((comment) =>
             comment._id === data.commentId
@@ -157,7 +169,6 @@ export default function Post({post, loggedUserId, index}) {
               : comment
           )
         );
-      }
     });
 
     socket.on('delete_comment', (data) => {
@@ -256,7 +267,15 @@ export default function Post({post, loggedUserId, index}) {
         </div>
       </div>
       {showComments && comments.map((comment) => {
-        console.log(comment);
+        console.log('comment:', comment);
+        console.log('commentLikes:', commentLikes);
+        const likes = commentLikes.find((element)=>{
+          if (element.commentId == comment._id) {
+            return element.likes
+          }
+        })
+        console.log('likes:', likes);
+        
         const commentOptions = [
           {
             key: '1',
@@ -300,7 +319,7 @@ export default function Post({post, loggedUserId, index}) {
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{comment.content}</p>
 
             </div>
-            <div className="flex gap-4 text-sm"><span className="cursor-pointer" onClick={()=>{likeComment(comment._id)}}>Like</span>|<span className="cursor-pointer">Reply</span></div>
+            <div className="flex gap-4 text-sm"><span className="cursor-pointer" onClick={()=>{likeComment(comment._id)}}>Like ({likes.likes.length})</span>|<span className="cursor-pointer">Reply</span></div>
           </div>
         );
       })}

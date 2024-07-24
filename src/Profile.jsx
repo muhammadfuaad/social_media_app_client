@@ -71,7 +71,7 @@ export default function Profile() {
     return (
       <>
         <button onClick={logOut}>Log Out</button>
-        <div>
+        {/* <div>
           <p className="text-lg font-bold">Your Posts: {userPosts.length}</p>
           {userPosts.map((post, index)=>{
             return (
@@ -79,7 +79,7 @@ export default function Profile() {
             )
           })}
           <Button type="primary" onClick={addPost}>Add New</Button>
-        </div>
+        </div> */}
 
         <div>
           <p className="text-lg font-bold">All Posts: {allPosts.length}</p>
